@@ -1,0 +1,61 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+env:
+  UV_VERSION: 0.8.9
+  GHCR_IMAGE_REPOSITORY: ghcr.io/${{ github.repository }}
+  PLATFORMS: linux/amd64,linux/arm64/v8
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python:
+          - "3.10"
+          - "3.11"
+          - "3.12"
+          - "3.13"
+        variant:
+          - bookworm
+          - slim
+        include:
+          - python: "3.13"
+            is_default_python: true
+          - variant: bookworm
+            is_default_variant: true
+    steps:
+      - uses: actions/checkout@v4.1.4
+      - uses: docker/login-action@v3.1.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set image tags in env
+        run: |
+          TAG_SUFFIX="${{ matrix.python }}-${{ matrix.variant }}"
+          echo "GIT_SHA_TAG=${{ env.GHCR_IMAGE_REPOSITORY }}:${{ github.sha }}-${TAG_SUFFIX}" >> $GITHUB_ENV
+          echo "BASE_RELEASE_TAG=${{ env.GHCR_IMAGE_REPOSITORY }}:${{ env.UV_VERSION }}" >> $GITHUB_ENV
+      - name: "Python + Variant: ${{ env.UV_VERSION }}-python-${{ matrix.python }}-${{ matrix.variant }}"
+        run: |
+          RELEASE_TAG="${BASE_RELEASE_TAG}-python-${{ matrix.python }}-${{ matrix.variant }}"
+          docker buildx imagetools create --tag $RELEASE_TAG $GIT_SHA_TAG
+      - name: "Python + Default Variant: ${{ env.UV_VERSION }}-python-${{ matrix.python }}"
+        if: matrix.is_default_variant
+        run: |
+          RELEASE_TAG="${BASE_RELEASE_TAG}-python-${{ matrix.python }}"
+          docker buildx imagetools create --tag $RELEASE_TAG $GIT_SHA_TAG
+      - name: "Default Python + Variant: ${{ env.UV_VERSION }}-${{ matrix.variant }}"
+        if: matrix.is_default_python
+        run: |
+          RELEASE_TAG="${BASE_RELEASE_TAG}-${{ matrix.variant }}"
+          docker buildx imagetools create --tag $RELEASE_TAG $GIT_SHA_TAG
+      - name: "Default Python + Default Variant: ${{ env.UV_VERSION }}"
+        if: matrix.is_default_python && matrix.is_default_variant
+        run: docker buildx imagetools create --tag $BASE_RELEASE_TAG $GIT_SHA_TAG
+      - name: "Default Python + Default Variant: latest"
+        if: matrix.is_default_python && matrix.is_default_variant
+        run: docker buildx imagetools create --tag $GHCR_IMAGE_REPOSITORY:latest $GIT_SHA_TAG
