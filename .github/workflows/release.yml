@@ -21,9 +21,9 @@ jobs:
           - "3.13"
         variant:
           - bookworm
-          - bookworm-slim
+          - slim-bookworm
           - trixie
-          - trixie-slim
+          - slim-trixie
         include:
           - python: "3.13"
             is_default_python: true

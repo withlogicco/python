@@ -2,12 +2,11 @@ ARG PYTHON_VERSION=3.13
 ARG VARIANT=bookworm
 ARG UV_VERSION=0.8.12
 
-FROM ghcr.io/astral-sh/uv:${UV_VERSION}-python${PYTHON_VERSION}-${VARIANT} AS uv
+FROM ghcr.io/astral-sh/uv:${UV_VERSION} AS uv
 
 FROM python:${PYTHON_VERSION}-${VARIANT} AS base
 
-COPY --from=uv /usr/local/bin/uv /usr/local/bin/uv
-COPY --from=uv /usr/local/bin/uvx /usr/local/bin/uvx
+COPY --from=uv /uv /uvx /usr/local/bin/
 
 ARG UV_PROJECT_ENVIRONMENT=/opt/uv/venv
 
