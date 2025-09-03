@@ -21,14 +21,14 @@ jobs:
           - "3.13"
         variant:
           - bookworm
-          - slim-bookworm
           - trixie
-          - slim-trixie
         include:
           - python: "3.13"
             is_default_python: true
           - variant: trixie
             is_default_variant: true
+    env:
+      GIT_SHA_TAG: ${{ env.GHCR_IMAGE_REPOSITORY }}:${{ github.sha }}-${{ matrix.python }}-${{ matrix.variant }}
     steps:
       - uses: actions/checkout@v4.1.4
       - uses: docker/login-action@v3.1.0
@@ -36,28 +36,18 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set image tags in env
-        run: |
-          TAG_SUFFIX="${{ matrix.python }}-${{ matrix.variant }}"
-          echo "GIT_SHA_TAG=${{ env.GHCR_IMAGE_REPOSITORY }}:${{ github.sha }}-${TAG_SUFFIX}" >> $GITHUB_ENV
-          echo "BASE_RELEASE_TAG=${{ env.GHCR_IMAGE_REPOSITORY }}:${{ env.UV_VERSION }}" >> $GITHUB_ENV
-      - name: "Python + Variant: ${{ env.UV_VERSION }}-python-${{ matrix.python }}-${{ matrix.variant }}"
-        run: |
-          RELEASE_TAG="${BASE_RELEASE_TAG}-python-${{ matrix.python }}-${{ matrix.variant }}"
-          docker buildx imagetools create --tag $RELEASE_TAG $GIT_SHA_TAG
-      - name: "Python + Default Variant: ${{ env.UV_VERSION }}-python-${{ matrix.python }}"
-        if: matrix.is_default_variant
-        run: |
-          RELEASE_TAG="${BASE_RELEASE_TAG}-python-${{ matrix.python }}"
-          docker buildx imagetools create --tag $RELEASE_TAG $GIT_SHA_TAG
-      - name: "Default Python + Variant: ${{ env.UV_VERSION }}-${{ matrix.variant }}"
-        if: matrix.is_default_python
-        run: |
-          RELEASE_TAG="${BASE_RELEASE_TAG}-${{ matrix.variant }}"
-          docker buildx imagetools create --tag $RELEASE_TAG $GIT_SHA_TAG
-      - name: "Default Python + Default Variant: ${{ env.UV_VERSION }}"
-        if: matrix.is_default_python && matrix.is_default_variant
-        run: docker buildx imagetools create --tag $BASE_RELEASE_TAG $GIT_SHA_TAG
-      - name: "Default Python + Default Variant: latest"
-        if: matrix.is_default_python && matrix.is_default_variant
-        run: docker buildx imagetools create --tag $GHCR_IMAGE_REPOSITORY:latest $GIT_SHA_TAG
+
+      - name: tag ${{ matrix.python }}-${{ matrix.variant }}
+        run: docker buildx imagetools create --tag ${{ env.GHCR_IMAGE_REPOSITORY }}:${{ matrix.python }}-${{ matrix.variant }} $GIT_SHA_TAG
+
+      - if: matrix.is_default_variant
+        name: tag for default variant (${{ matrix.python }})
+        run: docker buildx imagetools create --tag ${{ env.GHCR_IMAGE_REPOSITORY }}:${{ matrix.python }} $GIT_SHA_TAG  
+
+      - if: matrix.is_default_python
+        name: tag for default python (${{ matrix.variant }})
+        run: docker buildx imagetools create --tag ${{ env.GHCR_IMAGE_REPOSITORY }}:${{ matrix.variant }} $GIT_SHA_TAG
+      
+      - if: matrix.is_default_python && matrix.is_default_variant
+        name: tag for default python and variant (latest)
+        run: docker buildx imagetools create --tag ${{ env.GHCR_IMAGE_REPOSITORY }}:latest $GIT_SHA_TAG

@@ -28,13 +28,3 @@ RUN mkdir -p ${UV_PROJECT_ENVIRONMENT}
 VOLUME [ ${UV_PROJECT_ENVIRONMENT} ]
 
 WORKDIR /usr/src/app
-
-FROM base AS onbuild
-
-ONBUILD RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    uv sync
-ONBUILD COPY ./ ./
-
-FROM base
