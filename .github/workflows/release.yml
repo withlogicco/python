@@ -5,7 +5,7 @@ on:
     types: [published]
 
 env:
-  UV_VERSION: 0.8.12
+  UV_VERSION: 0.8.14
   GHCR_IMAGE_REPOSITORY: ghcr.io/${{ github.repository }}
   PLATFORMS: linux/amd64,linux/arm64/v8
 
