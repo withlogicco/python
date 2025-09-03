@@ -46,6 +46,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            POETRY_VERSION=${{ env.UV_VERSION }}
+            UV_VERSION=${{ env.UV_VERSION }}
             PYTHON_VERSION=${{ matrix.python }}
             VARIANT=${{ matrix.variant }}
