@@ -1,6 +1,6 @@
 ARG PYTHON_VERSION=3.13
 ARG VARIANT=bookworm
-ARG UV_VERSION=0.8.12
+ARG UV_VERSION=0.8.14
 
 FROM ghcr.io/astral-sh/uv:${UV_VERSION} AS uv
 
@@ -28,13 +28,3 @@ RUN mkdir -p ${UV_PROJECT_ENVIRONMENT}
 VOLUME [ ${UV_PROJECT_ENVIRONMENT} ]
 
 WORKDIR /usr/src/app
-
-FROM base AS onbuild
-
-ONBUILD RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    uv sync
-ONBUILD COPY ./ ./
-
-FROM base
