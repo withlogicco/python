@@ -1,7 +1,7 @@
 
 # Python with LOGIC
 
-An opinionated base Docker image used when doing [Python with LOGIC](https://withlogic.co/ref/python). Optimized for development, CI builds and production deployments.
+An opinionated base Docker image used when doing [Python with LOGIC](https://withlogic.co/ref/python). Optimized for development, CI and production.
 
 ![uv](https://img.shields.io/badge/uv-0.8.14-lime) ![python](https://img.shields.io/badge/Python-3.13%20(default)%2C3.12%2C3.11%2C3.10-blue) ![variants](https://img.shields.io/badge/Variant-trixie%20(default)%2C%20bookworm-purple?label=Variants)
 
