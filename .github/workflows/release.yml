@@ -27,8 +27,8 @@ jobs:
           - variant: trixie
             is_default_variant: true
     env:
-      GHCR_IMAGE_REPOSITORY: ghcr.io/${{ github.repository }}
-      GIT_SHA_TAG: ghcr.io/${{ github.repository }}:${{ github.sha }}-${{ matrix.python }}-${{ matrix.variant }}
+      GIT_SHA_TAG: ${{ github.sha }}-${{ matrix.python }}-${{ matrix.variant }}
+
     steps:
       - uses: actions/checkout@v4.1.4
       - uses: docker/login-action@v3.1.0
@@ -38,16 +38,28 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: tag ${{ matrix.python }}-${{ matrix.variant }}
-        run: docker buildx imagetools create --tag ${{ env.GHCR_IMAGE_REPOSITORY }}:${{ matrix.python }}-${{ matrix.variant }} ${{ env.GIT_SHA_TAG }}
+        uses: ./.github/actions/tag
+        with:
+          source: ${{ env.GIT_SHA_TAG }}
+          target: ${{ matrix.python }}-${{ matrix.variant }}
 
       - if: matrix.is_default_variant
-        name: tag for default variant (${{ matrix.python }})
-        run: docker buildx imagetools create --tag ${{ env.GHCR_IMAGE_REPOSITORY }}:${{ matrix.python }} ${{ env.GIT_SHA_TAG }}  
+        name: tag ${{ matrix.python }} (default variant)
+        uses: ./.github/actions/tag
+        with:
+          source: ${{ env.GIT_SHA_TAG }}
+          target: ${{ matrix.python }}
 
       - if: matrix.is_default_python
-        name: tag for default python (${{ matrix.variant }})
-        run: docker buildx imagetools create --tag ${{ env.GHCR_IMAGE_REPOSITORY }}:${{ matrix.variant }} ${{ env.GIT_SHA_TAG }}
+        name: tag ${{ matrix.variant }} (default python)
+        uses: ./.github/actions/tag
+        with:
+          source: ${{ env.GIT_SHA_TAG }}
+          target: ${{ matrix.variant }}
       
       - if: matrix.is_default_python && matrix.is_default_variant
-        name: tag for default python and variant (latest)
-        run: docker buildx imagetools create --tag ${{ env.GHCR_IMAGE_REPOSITORY }}:latest ${{ env.GIT_SHA_TAG }}
+        name: tag latest (default python and variant)
+        uses: ./.github/actions/tag
+        with:
+          source: ${{ env.GIT_SHA_TAG }}
+          target: latest

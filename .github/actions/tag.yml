@@ -1,0 +1,21 @@
+name: Tag Docker image
+description: Tag an existing Docker image on GHCR with an additional tag
+
+inputs:
+  repo:
+    description: Repository of the image to tag
+    default: ghcr.io/${{ github.repository }}
+    required: false
+  source:
+    description: The source tag to use
+    required: true
+  target:
+    description: The target tag to create
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: tag
+      shell: bash
+      run: docker buildx imagetools create --tag ${{ inputs.repo }}:${{ inputs.target }} ${{ inputs.repo }}:${{ inputs.source }}
