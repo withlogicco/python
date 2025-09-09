@@ -11,23 +11,31 @@ An opinionated base Docker image used when doing [Python with LOGIC](https://wit
 
 ## Why
 
-We built and published this opinionated Docker image, based on our workflow when doing Python with LOGIC. We prioritise DRY, considerate defaults and optimizing for speed and convenience across all steps in our workflow, from development to CI and deployments; preview or production. In particular this means:
+We built this image to optimize our workflow when doing Python with LOGIC. We prioritise consistency, considerate defaults and speed across all steps in our workflow, from development, to CI and preview or production deployments. In particular this means:
 
 - Python and virtual environments optimized for Docker deployments
 - Optimized dependency management with uv
 - Preconfigured volumes for development with Docker
 
-## Usage
+More details are available in our announcement blog post at https://withlogic.co/var/log/2025/09/03/open-sourcing-the-python-with-logic-docker-image.
 
-The simplest way to get started with this image is to use the `latest` tag and copy your source code in the current working directory:
+## Getting started
+
+The simplest way to get started is to use the `latest` tag and copy your source code in the current working directory:
 
 ```dockerfile
 FROM ghcr.io/withlogicco/python
 
-COPY ./ ./
+COPY . .
 ```
 
-For advanced usage scenarios, including using uv with efficient Docker image caching take a look 
+For more nuanced scenarios, like using uv with efficient Docker image caching take a look below at [Advanced usage](#advanced-usage).
+
+### Video
+
+If you enjoy videos more than reading documentation, you can watch our video showcasing how to **[Get started with uv](https://www.youtube.com/watch?v=E2_AwKjAzGk)** on YouTube:
+
+[![Watch the video](https://img.youtube.com/vi/E2_AwKjAzGk/hqdefault.jpg)](https://youtu.be/E2_AwKjAzGk)
 
 ## Tags
 
