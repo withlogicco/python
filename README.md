@@ -3,7 +3,7 @@
 
 An opinionated base Docker image used when doing [Python with LOGIC](https://withlogic.co/ref/python). Optimized for development, CI and production.
 
-![uv](https://img.shields.io/badge/uv-0.8.14-lime) ![python](https://img.shields.io/badge/Python-3.14%20(default)%2C3.13%2C3.12%2C3.11%2C3.10-blue) ![variants](https://img.shields.io/badge/Variant-trixie%20(default)%2C%20bookworm-purple?label=Variants)
+![uv](https://img.shields.io/badge/uv-0.13.6-lime) ![python](https://img.shields.io/badge/Python-3.15%20(default)%2C3.14%2C3.13%2C3.12%2C3.11%2C3.10-blue) ![variants](https://img.shields.io/badge/Variant-trixie%20(default)%2C%20bookworm-purple?label=Variants)
 
 > [!TIP]
 > 
@@ -53,8 +53,9 @@ There are tags available to choose a specific supported Python versions and imag
 
 ### Examples
 
-- Python 3.14 on Trixie: `ghcr.io/withlogicco/python`
-- Python 3.14 on Bookworm: `ghcr.io/withlogicco/python:bookworm`
+- Python 3.15 on Trixie: `ghcr.io/withlogicco/python`
+- Python 3.15 on Bookworm: `ghcr.io/withlogicco/python:bookworm`
+- Python 3.14 on Trixie: `ghcr.io/withlogicco/python:3.14`
 - Python 3.13 on Trixie: `ghcr.io/withlogicco/python:3.13`
 - Python 3.13 on Bookworm: `ghcr.io/withlogicco/python:3.13-bookworm`
 

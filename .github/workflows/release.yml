@@ -5,7 +5,7 @@ on:
     types: [published]
 
 env:
-  UV_VERSION: 0.8.14
+  UV_VERSION: 0.13.6
   PLATFORMS: linux/amd64,linux/arm64/v8
 
 jobs:
@@ -19,11 +19,12 @@ jobs:
           - "3.12"
           - "3.13"
           - "3.14"
+          - "3.15"
         variant:
           - bookworm
           - trixie
         include:
-          - python: "3.14"
+          - python: "3.15"
             is_default_python: true
           - variant: trixie
             is_default_variant: true
